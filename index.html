@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASPIRELY(advisory AI) - Career Counseling</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for fonts, animations, and background */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-delay {
+            animation: fadeIn 0.8s ease-out 0.2s forwards;
+            opacity: 0; /* Ensures element is hidden before animation starts */
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out 0.4s forwards;
+            opacity: 0; /* Ensures element is hidden before animation starts */
+        }
+
+        /* Specific animation for cards */
+        .card-animation {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        /* Staggered animation for grid items */
+        .grid > div {
+            opacity: 0; /* Hide cards initially */
+        }
+
+        /* Blob animation for background circles */
+        @keyframes blob {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        .animate-blob {
+            animation: blob 7s infinite cubic-bezier(0.6, 0.01, 0.01, 0.99);
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+        
+        /* Hide scrollbar for chat messages */
+        #chatMessages {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        }
+        #chatMessages::-webkit-scrollbar { /* WebKit */
+            width: 0;
+            height: 0;
+        }
+
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 text-gray-200 font-sans">
+
+    <div class="min-h-screen p-4 sm:p-6 md:p-8 relative overflow-hidden">
+        <!-- Background circles for aesthetic design -->
+        <div class="absolute top-0 left-0 w-72 h-72 bg-purple-800 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-blob"></div>
+        <div class="absolute top-0 right-0 w-72 h-72 bg-indigo-800 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-0 left-1/4 w-72 h-72 bg-blue-800 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-blob animation-delay-4000"></div>
+
+        <div class="relative z-10">
+            <!-- Header Section -->
+            <header class="text-center mb-10">
+                <h1 class="text-5xl sm:text-6xl font-extrabold text-blue-300 mb-4 drop-shadow-xl leading-tight animate-fade-in">
+                    ASPIRELY
+                    <span class="block text-3xl sm:text-4xl text-indigo-200 font-light tracking-wider">(advisory AI)</span>
+                </h1>
+                <p class="text-xl sm:text-2xl text-gray-400 max-w-3xl mx-auto px-4 animate-slide-up font-light">
+                    Navigate your future, discover free courses, and unlock your true potential.
+                </p>
+            </header>
+
+            <!-- Navigation Buttons -->
+            <nav class="flex justify-center space-x-4 mb-12 animate-fade-in-delay">
+                <button id="navCourses" class="py-3 px-6 rounded-xl font-bold text-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                    Courses
+                </button>
+                <button id="navJobs" class="py-3 px-6 rounded-xl font-bold text-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gray-700 text-gray-300 hover:bg-gray-600">
+                    Jobs & Internships
+                </button>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main>
+                <!-- Courses View -->
+                <div id="coursesView">
+                    <!-- Search Bar Section for Courses -->
+                    <section class="max-w-4xl mx-auto mb-16 bg-gray-800 p-8 rounded-3xl shadow-2xl border border-gray-700 transform transition-transform duration-300 hover:scale-[1.005] animate-fade-in-delay">
+                        <div class="flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-6">
+                            <input id="courseSearchInput" type="text" placeholder="Search for courses (e.g., GATE, Python, UPSC, Data Science, AI, Marketing)" class="flex-grow p-4 border border-gray-600 rounded-2xl focus:outline-none focus:ring-3 focus:ring-blue-500 text-lg shadow-inner w-full bg-gray-700 text-gray-200 placeholder-gray-400 transition-all duration-200 font-medium"/>
+                            <button id="courseSearchButton" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-8 rounded-2xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-700 w-full sm:w-auto flex items-center justify-center group text-lg tracking-wide">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-3 transition-transform duration-200 group-hover:rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                Search
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Course Suggester Button -->
+                    <section class="text-center mb-16">
+                        <button id="toggleSuggesterBtn" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-700 text-lg tracking-wide">
+                            Find Your Ideal Course!
+                        </button>
+                    </section>
+
+                    <!-- Course Suggester Quiz Container -->
+                    <div id="courseSuggesterContainer" class="hidden">
+                        <!-- Quiz content will be injected here by JavaScript -->
+                    </div>
+
+                    <!-- Course Listing Section -->
+                    <section id="courseListing" class="max-w-7xl mx-auto">
+                        <div id="courseGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            <!-- Course cards will be injected here by JavaScript -->
+                        </div>
+                        <p id="courseEmptyState" class="text-center text-2xl text-gray-400 mt-12 p-6 bg-gray-800 rounded-xl shadow-md border border-gray-700 animate-fade-in font-light hidden"></p>
+                    </section>
+                </div>
+
+                <!-- Jobs View -->
+                <div id="jobsView" class="hidden">
+                     <!-- Search Bar for Jobs & Internships -->
+                    <section class="max-w-4xl mx-auto mb-16 bg-gray-800 p-8 rounded-3xl shadow-2xl border border-gray-700 transform transition-transform duration-300 hover:scale-[1.005]">
+                        <div class="flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-6">
+                            <input id="jobSearchInput" type="text" placeholder="Search for jobs or internships (e.g., Software Engineer, Marketing, Bangalore)" class="flex-grow p-4 border border-gray-600 rounded-2xl focus:outline-none focus:ring-3 focus:ring-teal-500 text-lg shadow-inner w-full bg-gray-700 text-gray-200 placeholder-gray-400 transition-all duration-200 font-medium"/>
+                            <button id="jobSearchButton" class="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-bold py-4 px-8 rounded-2xl shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-700 w-full sm:w-auto flex items-center justify-center group text-lg tracking-wide">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-3 transition-transform duration-200 group-hover:rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                Search Jobs
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Job/Internship Listing -->
+                    <section id="jobListing" class="max-w-7xl mx-auto">
+                        <div id="jobGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                             <!-- Job cards will be injected here by JavaScript -->
+                        </div>
+                        <p id="jobEmptyState" class="text-center text-2xl text-gray-400 mt-12 p-6 bg-gray-800 rounded-xl shadow-md border border-gray-700 animate-fade-in font-light hidden"></p>
+                    </section>
+                </div>
+            </main>
+
+            <!-- Footer Section -->
+            <footer class="text-center mt-20 text-gray-500 text-sm p-4 animate-fade-in">
+                <p>&copy; 2024 ASPIRELY(advisory AI). All rights reserved.</p>
+                <p class="mt-1">Disclaimer: Course links are examples and may change. Always verify course availability and content directly on the provider's website.</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div id="chatbotContainer">
+        <!-- Chatbot Button -->
+        <button id="chatbotToggleButton" class="fixed bottom-6 right-4 sm:right-8 bg-gradient-to-r from-purple-600 to-indigo-600 w-16 h-16 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 ease-in-out z-40" aria-label="Open Chatbot">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+        </button>
+        <!-- Chatbot Window -->
+        <div id="chatbotWindow" class="hidden fixed bottom-24 right-4 sm:right-8 w-80 sm:w-96 h-[500px] bg-gray-900/90 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-700 flex flex-col transition-transform duration-300 ease-in-out z-50">
+            <!-- Header -->
+            <div class="bg-gray-800 p-4 rounded-t-2xl flex justify-between items-center border-b border-gray-700">
+                <h3 class="text-lg font-bold text-blue-300">ASPIRELY AI Assistant</h3>
+                <button id="closeChatbotButton" class="text-gray-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <!-- Messages Area -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto">
+                <div id="chatMessagesContent" class="space-y-4">
+                    <!-- Messages will be injected here -->
+                </div>
+            </div>
+            <!-- Input Form -->
+            <form id="chatForm" class="p-4 bg-gray-800 rounded-b-2xl border-t border-gray-700 flex items-center space-x-2">
+                <input id="chatInput" type="text" placeholder="Ask me anything..." class="flex-grow p-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-200 placeholder-gray-400 transition-all duration-200" />
+                <button type="submit" id="chatSendButton" class="bg-gradient-to-r from-blue-600 to-blue-700 p-3 rounded-xl text-white hover:opacity-90 transition-opacity disabled:opacity-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        // --- DATA ---
+        const allCourses = [
+            // GATE Exam Courses
+            { id: 258, name: 'GATE Exam Preparation: Engineering Mathematics', description: 'Free course covering essential Engineering Mathematics topics for the GATE exam.', link: 'https://nptel.ac.in/courses/111107108' },
+            { id: 259, name: 'GATE Exam Preparation: General Aptitude', description: 'Free resources for General Aptitude section of the GATE exam, crucial for all branches.', link: 'https://nptel.ac.in/courses/109106173' },
+            { id: 260, name: 'GATE Exam Preparation: Computer Science & IT', description: 'Free lectures and study material for GATE Computer Science and Information Technology.', link: 'https://nptel.ac.in/courses/106105163' },
+            { id: 261, name: 'GATE Exam Preparation: Electrical Engineering', description: 'Free online course for GATE Electrical Engineering, covering core concepts.', link: 'https://nptel.ac.in/courses/108106172' },
+            { id: 262, name: 'GATE Exam Preparation: Electronics & Communication Engineering', description: 'Comprehensive free course for GATE Electronics and Communication Engineering.', link: 'https://nptel.ac.in/courses/108105059' },
+            { id: 263, name: 'GATE Exam Preparation: Mechanical Engineering', description: 'Free resources and video lectures for GATE Mechanical Engineering.', link: 'https://nptel.ac.in/courses/112105123' },
+            { id: 264, name: 'GATE Exam Preparation: Civil Engineering', description: 'Free study material and lectures for GATE Civil Engineering.', link: 'https://nptel.ac.in/courses/105105176' },
+            // General Courses
+            { id: 1, name: 'Introduction to Python Programming', description: 'Learn the fundamentals of Python, a versatile language for web development, data analysis, and AI.', link: 'https://www.freecodecamp.org/learn/scientific-computing-with-python/' },
+            { id: 2, name: 'Web Development Basics (HTML, CSS, JS)', description: 'Master the core technologies for building interactive websites.', link: 'https://www.freecodecamp.org/learn/responsive-web-design/' },
+            { id: 3, name: 'Data Science Fundamentals', description: 'An introduction to data science concepts, tools, and techniques.', link: 'https://www.coursera.org/learn/introduction-to-data-science' },
+            { id: 4, name: 'Digital Marketing Essentials', description: 'Understand the basics of online marketing, SEO, social media, and content creation.', link: 'https://learndigital.withgoogle.com/digitalgarage/course/digital-marketing' },
+            { id: 5, name: 'Graphic Design for Beginners', description: 'Explore the principles of graphic design and learn to use popular design software.', link: 'https://www.canva.com/design-school/courses/' },
+            { id: 6, name: 'Cloud Computing Fundamentals', description: 'Get an overview of cloud services, deployment models, and major cloud providers.', link: 'https://aws.amazon.com/training/digital/' },
+            { id: 7, name: 'Cybersecurity Introduction', description: 'Learn about common cyber threats and basic security measures to protect data.', link: 'https://www.cybrary.it/course/introduction-to-cybersecurity/' },
+            { id: 8, name: 'Machine Learning for Everyone', description: 'Demystify machine learning concepts and algorithms with practical examples.', link: 'https://www.coursera.org/learn/machine-learning-for-everyone' },
+            { id: 9, name: 'Mobile App Development (React Native)', description: 'Build cross-platform mobile applications using JavaScript and React.', link: 'https://www.udemy.com/course/the-complete-react-native-and-redux-course/' },
+            { id: 10, name: 'Business Analytics', description: 'Learn to analyze business data to make informed decisions and solve problems.', link: 'https://www.edx.org/course/introduction-to-business-analytics' },
+            { id: 11, name: 'Project Management Basics', description: 'Understand the core concepts of project management, including planning, execution, and closing projects.', link: 'https://www.coursera.org/learn/project-management-basics' },
+            { id: 12, name: 'Introduction to SQL', description: 'Learn the fundamentals of SQL for managing and querying relational databases.', link: 'https://www.khanacademy.org/computing/computer-programming/sql' },
+            { id: 13, name: 'UI/UX Design Fundamentals', description: 'Explore user interface (UI) and user experience (UX) design principles and best practices.', link: 'https://www.futurelearn.com/courses/introduction-to-user-experience-design' },
+            { id: 14, name: 'Financial Accounting', description: 'Learn the basics of financial accounting, including balance sheets, income statements, and cash flow.', link: 'https://www.edx.org/course/introduction-to-financial-accounting' },
+            { id: 15, name: 'Content Marketing Strategy', description: 'Develop a strong content marketing strategy to attract and engage your target audience.', link: 'https://www.hubspot.com/courses/content-marketing' },
+            { id: 16, name: 'Introduction to Blockchain', description: 'Understand the foundational concepts of blockchain technology and its applications.', link: 'https://www.edx.org/course/introduction-to-blockchain' },
+            { id: 17, name: 'Game Development with Unity', description: 'Get started with game development using the Unity engine and C#.', link: 'https://learn.unity.com/course/create-with-code-live' },
+            { id: 18, name: 'Public Speaking and Presentation Skills', description: 'Improve your public speaking abilities and learn to deliver impactful presentations.', link: 'https://www.edx.org/course/introduction-to-public-speaking' },
+            { id: 19, name: 'Introduction to Data Structures & Algorithms', description: 'Learn fundamental data structures and algorithms, essential for efficient programming.', link: 'https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/' },
+            { id: 20, name: 'Ethical Hacking Basics', description: 'An introductory course to the principles and methodologies of ethical hacking and cybersecurity testing.', link: 'https://www.cybrary.it/course/ethical-hacking-basics/' },
+            { id: 21, name: 'CAT Exam Preparation: Quantitative Aptitude', description: 'Free resources and practice for the Quantitative Aptitude section of the CAT exam.', link: 'https://www.hitbullseye.com/CAT-Quant-Preparation.php' },
+            { id: 22, name: 'UPSC Civil Services Exam: Indian Polity', description: 'Comprehensive free course on Indian Polity for UPSC Civil Services Exam preparation.', link: 'https://unacademy.com/course/indian-polity-for-upsc-cse-by-m-laxmikanth/2A1B2C3D' },
+            { id: 23, name: 'SSC CGL Exam: General Intelligence & Reasoning', description: 'Prepare for the General Intelligence & Reasoning section of the SSC CGL exam with free materials.', link: 'https://www.adda247.com/ssc-cgl-reasoning-preparation-strategy' },
+            { id: 24, name: 'CAT Exam Preparation: Verbal Ability & Reading Comprehension', description: 'Free lessons and practice for the Verbal Ability and Reading Comprehension section of the CAT exam.', link: 'https://www.byjus.com/cat/verbal-ability-reading-comprehension/' },
+            { id: 25, name: 'UPSC Civil Services Exam: Indian Economy', description: 'Free study material and lectures on Indian Economy for UPSC CSE.', link: 'https://www.insightsonindia.com/indian-economy-for-upsc-ias-prelims-mains/' },
+            { id: 26, name: 'SSC CHSL Exam: English Language', description: 'Free course to improve English Language skills for SSC CHSL and other competitive exams.', link: 'https://gradeup.co/ssc-chsl-english-language-preparation-strategy-i' },
+            { id: 27, name: 'Introduction to Artificial Intelligence', description: 'Explore the basic concepts of AI, machine learning, and deep learning.', link: 'https://www.edx.org/course/artificial-intelligence-ai' },
+            // 50 New Courses
+            { id: 28, name: 'Advanced CSS and Sass', description: 'Level up your styling skills with advanced CSS concepts and the Sass preprocessor.', link: 'https://www.freecodecamp.org/learn/responsive-web-design/#advanced-css-and-sass' },
+            { id: 29, name: 'JavaScript Algorithms and Data Structures', description: 'The core freeCodeCamp curriculum for mastering JavaScript.', link: 'https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/' },
+            { id: 30, name: 'Front End Development Libraries', description: 'Learn popular front-end libraries like React, Redux, and Bootstrap.', link: 'https://www.freecodecamp.org/learn/front-end-development-libraries/' },
+            { id: 31, name: 'Data Visualization with D3.js', description: 'Create dynamic and interactive data visualizations for the web.', link: 'https://www.freecodecamp.org/learn/data-visualization/' },
+            { id: 32, name: 'APIs and Microservices', description: 'Build and manage backend APIs and microservices with Node.js and Express.', link: 'https://www.freecodecamp.org/learn/back-end-development-and-apis/' },
+            { id: 33, name: 'The Science of Well-Being', description: 'A popular course from Yale on the science of happiness and building better habits.', link: 'https://www.coursera.org/learn/the-science-of-well-being' },
+            { id: 34, name: 'Learning How to Learn', description: 'Powerful mental tools to help you master tough subjects.', link: 'https://www.coursera.org/learn/learning-how-to-learn' },
+            { id: 35, name: 'Financial Markets', description: 'An overview of the ideas, methods, and institutions that permit human society to manage risks and foster enterprise.', link: 'https://www.coursera.org/learn/financial-markets' },
+            { id: 36, name: 'Introduction to Psychology', description: 'A comprehensive overview of the scientific study of thought and behavior.', link: 'https://www.coursera.org/learn/introduction-psychology' },
+            { id: 37, name: 'English for Career Development', description: 'Designed for non-native English speakers to improve their career prospects.', link: 'https://www.coursera.org/learn/english-for-career-development' },
+            { id: 38, name: 'Google IT Support Professional Certificate', description: 'A comprehensive program by Google to start your career in IT.', link: 'https://www.coursera.org/professional-certificates/google-it-support' },
+            { id: 39, name: 'IBM Data Science Professional Certificate', description: 'Launch your career in data science with this program from IBM.', link: 'https://www.coursera.org/professional-certificates/ibm-data-science' },
+            { id: 40, name: 'Introduction to Philosophy', description: 'An introduction to some of the main areas of research in contemporary philosophy.', link: 'https://www.coursera.org/learn/philosophy' },
+            { id: 41, name: 'Microeconomics Principles', description: 'Learn about consumer and producer behavior and market structures.', link: 'https://www.coursera.org/learn/microeconomics' },
+            { id: 42, name: 'Introduction to Calculus', description: 'A beginner-friendly introduction to the core concepts of calculus.', link: 'https://www.coursera.org/learn/calculus1' },
+            { id: 43, name: 'Introduction to Marketing', description: 'Learn core marketing concepts and strategies from Wharton.', link: 'https://www.coursera.org/learn/wharton-marketing' },
+            { id: 44, name: 'CS50\'s Introduction to Computer Science', description: 'Harvard\'s legendary introduction to the intellectual enterprises of computer science.', link: 'https://www.edx.org/course/introduction-computer-science-harvardx-cs50x' },
+            { id: 45, name: 'Introduction to Linux', description: 'A free course from The Linux Foundation to get you started with the powerful OS.', link: 'https://www.edx.org/course/introduction-to-linux' },
+            { id: 46, name: 'The Analytics Edge', description: 'Learn how to use data and analytics to gain a competitive edge.', link: 'https://www.edx.org/course/the-analytics-edge' },
+            { id: 47, name: 'Introduction to Project Management', description: 'Learn the principles of project management and its importance in various industries.', link: 'https://www.edx.org/course/introduction-to-project-management' },
+            { id: 48, name: 'Introduction to Corporate Finance', description: 'Understand the fundamentals of financial decision-making in a corporate setting.', link: 'https://www.edx.org/course/introduction-to-corporate-finance' },
+            { id: 49, name: 'The Science of Everyday Thinking', description: 'Learn to think better, argue better, and choose better.', link: 'https://www.edx.org/course/the-science-of-everyday-thinking' },
+            { id: 50, name: 'Introduction to Game Design', description: 'Learn the fundamentals of game design and development.', link: 'https://www.edx.org/course/introduction-to-game-design' },
+            { id: 51, name: 'Creative Writing: The Craft of Plot', description: 'Learn how to structure your story and create a compelling plot.', link: 'https://www.coursera.org/learn/plot' },
+            { id: 52, name: 'Photography Basics and Beyond', description: 'From smartphone to DSLR, learn the fundamentals of photography.', link: 'https://www.coursera.org/specializations/photography-basics' },
+            { id: 53, name: 'Fundamentals of Graphic Design', description: 'Learn the core principles of graphic design from CalArts.', link: 'https://www.coursera.org/learn/fundamentals-of-graphic-design' },
+            { id: 54, name: 'Music Production Specialization', description: 'A comprehensive program from Berklee College of Music.', link: 'https://www.coursera.org/specializations/music-production' },
+            { id: 55, name: 'Introduction to Public Speaking', description: 'Master the art of effective public speaking and presentation.', link: 'https://www.coursera.org/learn/public-speaking' },
+            { id: 56, name: 'Personal Finance', description: 'Learn how to manage your money, save, and invest for your future.', link: 'https://www.khanacademy.org/college-careers-more/personal-finance' },
+            { id: 57, name: 'Art History', description: 'Explore the history of art from ancient civilizations to the present day.', link: 'https://www.khanacademy.org/humanities/art-history' },
+            { id: 58, name: 'Cosmology and Astronomy', description: 'Learn about the universe, stars, planets, and galaxies.', link: 'https://www.khanacademy.org/science/cosmology-and-astronomy' },
+            { id: 59, name: 'Organic Chemistry', description: 'A comprehensive course on the fundamental concepts of organic chemistry.', link: 'https://www.khanacademy.org/science/organic-chemistry' },
+            { id: 60, name: 'US History', description: 'An in-depth look at the history of the United States.', link: 'https://www.khanacademy.org/humanities/us-history' },
+            { id: 61, name: 'World History', description: 'Explore the history of the world from the earliest humans to the present.', link: 'https://www.khanacademy.org/humanities/world-history' },
+            { id: 62, 'name': 'Introduction to SEO', 'description': 'Learn the fundamentals of Search Engine Optimization to improve website visibility.', 'link': 'https://www.semrush.com/academy/courses/seo-fundamentals-course' },
+            { id: 63, 'name': 'Social Media Marketing', 'description': 'Develop effective strategies for marketing on social media platforms.', 'link': 'https://www.hubspot.com/academy/social-media-marketing-course' },
+            { id: 64, 'name': 'Content Marketing', 'description': 'Master the art of creating and distributing valuable content to attract customers.', 'link': 'https://www.hubspot.com/academy/content-marketing-course' },
+            { id: 65, 'name': 'Email Marketing', 'description': 'Learn how to create effective email campaigns that convert.', 'link': 'https://www.hubspot.com/academy/email-marketing-course' },
+            { id: 66, 'name': 'Inbound Marketing', 'description': 'Learn the inbound methodology for attracting, engaging, and delighting customers.', 'link': 'https://www.hubspot.com/academy/inbound-marketing-course' },
+            { id: 67, 'name': 'Sales Management Training', 'description': 'Develop the skills needed to lead a successful sales team.', 'link': 'https://www.hubspot.com/academy/sales-management-training' },
+            { id: 68, 'name': 'Introduction to Web Accessibility', 'description': 'Learn how to make websites and applications accessible to people with disabilities.', 'link': 'https://www.edx.org/course/web-accessibility-introduction' },
+            { id: 69, 'name': 'Agile Project Management', 'description': 'Learn the principles and practices of Agile development and project management.', 'link': 'https://www.edx.org/course/agile-project-management' },
+            { id: 70, 'name': 'Introduction to Negotiation', 'description': 'A strategic playbook for becoming a more effective negotiator.', 'link': 'https://www.coursera.org/learn/negotiation' },
+            { id: 71, 'name': 'Introduction to Entrepreneurship', 'description': 'Learn the basics of starting and running your own business.', 'link': 'https://www.coursera.org/learn/entrepreneurship' },
+            { id: 72, 'name': 'Introduction to Food & Health', 'description': 'Learn about the relationship between food, nutrition, and health.', 'link': 'https://www.coursera.org/learn/food-and-health' },
+            { id: 73, 'name': 'Introduction to Sustainability', 'description': 'Explore the key principles of sustainability and their application in various fields.', 'link': 'https://www.coursera.org/learn/sustainability' },
+            { id: 74, 'name': 'Introduction to Music Theory', 'description': 'Learn the fundamentals of music theory, including notes, scales, and chords.', 'link': 'https://www.coursera.org/learn/music-theory' },
+            { id: 75, 'name': 'Introduction to TensorFlow for AI', 'description': 'A beginner-friendly course on using TensorFlow for AI and deep learning.', 'link': 'https://www.coursera.org/learn/introduction-to-tensorflow' },
+            { id: 76, 'name': 'Build a Website with WordPress', 'description': 'A guided project on Coursera to build a complete website using WordPress.org.', 'link': 'https://www.coursera.org/projects/build-website-wordpress' },
+            { id: 77, 'name': 'Introduction to User Experience Design', 'description': 'Learn the basics of UX design and the design thinking process.', 'link': 'https://www.coursera.org/learn/ux-design-fundamentals' }
+        ];
+
+        const jobPortals = [
+            'https://www.linkedin.com/jobs/', 'https://www.naukri.com/jobs/', 'https://www.indeed.com/jobs/', 'https://www.monsterindia.com/jobs/', 'https://www.shine.com/jobs/', 'https://www.glassdoor.co.in/jobs/', 'https://www.timesjobs.com/', 'https://www.fiverr.com/categories/programming-tech/web-programming', 'https://www.upwork.com/freelance-jobs/', 'https://angel.co/jobs', 'https://remotive.io/remote-jobs', 'https://internshala.com/'
+        ];
+        const getRandomJobPortalLink = () => jobPortals[Math.floor(Math.random() * jobPortals.length)];
+
+        const allJobsAndInternships = [
+            { id: 1, title: 'Software Engineer Intern', company: 'Tech Innovations Inc.', location: 'Bangalore, India', description: 'Seeking a passionate software engineering intern to work on cutting-edge web applications. Experience with React and Node.js is a plus.', link: getRandomJobPortalLink() },
+            { id: 2, title: 'Data Scientist (Entry-Level)', company: 'Data Insights Corp.', location: 'Mumbai, India', description: 'Join our data science team to analyze large datasets, build predictive models, and derive actionable insights. Python and SQL skills required.', link: getRandomJobPortalLink() },
+            { id: 3, title: 'Digital Marketing Specialist', company: 'Global Marketing Solutions', location: 'Delhi, India', description: 'Exciting opportunity for a digital marketing specialist to manage SEO, SEM, and social media campaigns. Prior experience in content creation preferred.', link: getRandomJobPortalLink() },
+            { id: 4, title: 'UX/UI Design Intern', company: 'Creative Studios Ltd.', location: 'Hyderabad, India', description: 'Work alongside our design team to create intuitive and engaging user experiences for mobile and web platforms. Portfolio required.', link: getRandomJobPortalLink() },
+            { id: 5, title: 'Financial Analyst', company: 'Capital Investments Group', location: 'Chennai, India', description: 'Analyze financial data, prepare reports, and assist in investment decisions. Bachelor\'s in Finance or Economics required.', link: getRandomJobPortalLink() },
+            { id: 6, title: 'Human Resources Intern', company: 'People First HR', location: 'Pune, India', description: 'Support HR operations, including recruitment, onboarding, and employee relations. Excellent communication skills essential.', link: getRandomJobPortalLink() },
+            { id: 20, title: 'Software Development Engineer (SDE)', company: 'Global Tech Solutions', location: 'Remote', description: 'Develop and maintain scalable software solutions. Strong proficiency in Java/Python and data structures required.', link: getRandomJobPortalLink() },
+            { id: 21, title: 'AI/ML Engineer', company: 'Cognitive AI Labs', location: 'Bangalore, India', description: 'Develop and deploy machine learning models and AI-powered solutions. Experience with TensorFlow/PyTorch and NLP is a plus.', link: getRandomJobPortalLink() },
+            { id: 22, title: 'Full Stack Developer', company: 'Web Innovators', location: 'Hyderabad, India', description: 'Build end-to-end web applications using modern front-end (React/Vue) and back-end (Node.js/Django) technologies.', link: getRandomJobPortalLink() },
+            // 40 New Jobs/Internships
+            { id: 23, title: 'Content Writing Intern', company: 'Bloggers United', location: 'Remote', description: 'Create engaging blog posts and articles on various topics. Perfect for aspiring writers.', link: getRandomJobPortalLink() },
+            { id: 24, title: 'Social Media Marketing Intern', company: 'ViralReach Agency', location: 'Mumbai, India', description: 'Manage social media accounts, create content calendars, and analyze campaign performance.', link: getRandomJobPortalLink() },
+            { id: 25, title: 'Graphic Design Intern', company: 'DesignHub', location: 'Remote', description: 'Assist the design team in creating visuals for web, social media, and print. Proficiency in Adobe Creative Suite is a must.', link: getRandomJobPortalLink() },
+            { id: 26, title: 'Data Analytics Intern', company: 'NumberCrunch Inc.', location: 'Bangalore, India', description: 'Work with our data team to clean, analyze, and visualize data to provide business insights.', link: getRandomJobPortalLink() },
+            { id: 27, title: 'Mobile App Development Intern (Flutter)', company: 'AppMakers Co.', location: 'Pune, India', description: 'Help develop and maintain cross-platform mobile applications using Flutter and Dart.', link: getRandomJobPortalLink() },
+            { id: 28, title: 'Business Development Intern', company: 'Growth Partners', location: 'Delhi, India', description: 'Identify new sales leads, pitch products/services, and maintain client relationships.', link: getRandomJobPortalLink() },
+            { id: 29, title: 'Video Editing Intern', company: 'Media Productions', location: 'Remote', description: 'Edit raw video footage to create compelling short films, ads, and social media content.', link: getRandomJobPortalLink() },
+            { id: 30, title: 'Cybersecurity Intern', company: 'Secure Networks', location: 'Hyderabad, India', description: 'Assist in monitoring security alerts, conducting vulnerability assessments, and implementing security protocols.', link: getRandomJobPortalLink() },
+            { id: 31, title: 'Operations Intern', company: 'Efficiency Experts', location: 'Chennai, India', description: 'Learn the ins and outs of business operations by supporting our team in process optimization and logistics.', link: getRandomJobPortalLink() },
+            { id: 32, title: 'Public Relations Intern', company: 'Reputation Builders', location: 'Mumbai, India', description: 'Draft press releases, build media lists, and assist in managing the public image of our clients.', link: getRandomJobPortalLink() },
+            { id: 33, title: 'Cloud Engineering Intern (AWS)', company: 'CloudWorks', location: 'Bangalore, India', description: 'Gain hands-on experience with AWS services, infrastructure as code, and cloud architecture.', link: getRandomJobPortalLink() },
+            { id: 34, title: 'Sales Intern', company: 'Deal Closers Inc.', location: 'Pune, India', description: 'Learn the sales process from lead generation to closing deals in a fast-paced environment.', link: getRandomJobPortalLink() },
+            { id: 35, title: 'Frontend Development Intern (Vue.js)', company: 'UI Masters', location: 'Remote', description: 'Work with Vue.js to build beautiful and responsive user interfaces for web applications.', link: getRandomJobPortalLink() },
+            { id: 36, title: 'Product Management Intern', company: 'InnovateX', location: 'Delhi, India', description: 'Support the product team in market research, defining features, and creating product roadmaps.', link: getRandomJobPortalLink() },
+            { id: 37, title: 'Legal Intern', company: 'Law & Associates', location: 'Mumbai, India', description: 'Assist lawyers with legal research, drafting documents, and preparing for cases. For law students.', link: getRandomJobPortalLink() },
+            { id: 38, title: 'Finance Intern', company: 'Money Matters', location: 'Bangalore, India', description: 'Get exposure to financial modeling, accounting, and corporate finance within our finance department.', link: getRandomJobPortalLink() },
+            { id: 39, title: 'Digital Advertising Intern (Google Ads)', company: 'AdBoost', location: 'Remote', description: 'Learn to create, manage, and optimize Google Ads campaigns for various clients.', link: getRandomJobPortalLink() },
+            { id: 40, title: 'Supply Chain Intern', company: 'Logistics Pro', location: 'Chennai, India', description: 'Assist with inventory management, procurement, and logistics planning.', link: getRandomJobPortalLink() },
+            { id: 41, title: 'Game Design Intern', company: 'Pixel Perfect Games', location: 'Hyderabad, India', description: 'Contribute to game design documents, level design, and playtesting for our upcoming titles.', link: getRandomJobPortalLink() },
+            { id: 42, title: 'Campus Ambassador', company: 'Student Connect', location: 'College Campus', description: 'Represent our brand on your campus, organize events, and drive student engagement.', link: getRandomJobPortalLink() },
+            { id: 43, title: 'DevOps Intern', company: 'Infra Automate', location: 'Pune, India', description: 'Work with CI/CD pipelines, Docker, and Kubernetes to automate our development and deployment processes.', link: getRandomJobPortalLink() },
+            { id: 44, title: 'Market Research Intern', company: 'Insight Finders', location: 'Delhi, India', description: 'Conduct market research, analyze competitor strategies, and present findings to the marketing team.', link: getRandomJobPortalLink() },
+            { id: 45, title: 'Event Management Intern', company: 'Grand Events', location: 'Mumbai, India', description: 'Assist in planning and executing corporate events, conferences, and product launches.', link: getRandomJobPortalLink() },
+            { id: 46, title: 'iOS App Development Intern (Swift)', company: 'Apple Core Devs', location: 'Bangalore, India', description: 'Develop and maintain native iOS applications using Swift and Xcode.', link: getRandomJobPortalLink() },
+            { id: 47, title: 'Android App Development Intern (Kotlin)', company: 'Droid Builders', location: 'Remote', description: 'Work on our native Android app, writing clean and efficient code in Kotlin.', link: getRandomJobPortalLink() },
+            { id: 48, title: 'Technical Writer Intern', company: 'DocuTech', location: 'Hyderabad, India', description: 'Create clear and concise technical documentation, guides, and API references.', link: getRandomJobPortalLink() },
+            { id: 49, title: 'E-commerce Intern', company: 'Shopify Wizards', location: 'Pune, India', description: 'Assist in managing our online store, product listings, and customer orders.', link: getRandomJobPortalLink() },
+            { id: 50, title: 'Recruitment Intern', company: 'Talent Scout', location: 'Delhi, India', description: 'Learn the end-to-end recruitment process, from sourcing candidates to conducting interviews.', link: getRandomJobPortalLink() },
+            { id: 51, title: 'Animation Intern (2D/3D)', company: 'Motion Graphics Studio', location: 'Mumbai, India', description: 'Create animations for explainers, marketing videos, and other creative projects.', link: getRandomJobPortalLink() },
+            { id: 52, title: 'Blockchain Development Intern', company: 'Crypto Innovators', location: 'Remote', description: 'Work on decentralized applications (dApps) and smart contracts using Solidity and Ethereum.', link: getRandomJobPortalLink() },
+            { id: 53, title: 'Robotics Intern', company: 'Future Bots', location: 'Bangalore, India', description: 'Assist in the design, construction, and programming of robotic systems.', link: getRandomJobPortalLink() },
+            { id: 54, title: 'Instructional Design Intern', company: 'LearnWell', location: 'Remote', description: 'Help create engaging and effective e-learning courses and educational materials.', link: getRandomJobPortalLink() },
+            { id: 55, title: 'SEO Intern', company: 'RankHigh Digital', location: 'Pune, India', description: 'Learn the ropes of SEO, including keyword research, on-page optimization, and link building.', link: getRandomJobPortalLink() },
+            { id: 56, title: 'Customer Success Intern', company: 'ClientFirst', location: 'Hyderabad, India', description: 'Ensure clients are happy and successful with our product through onboarding and support.', link: getRandomJobPortalLink() },
+            { id: 57, title: 'Photography Intern', company: 'Shutterbug Studios', location: 'Delhi, India', description: 'Assist professional photographers on shoots, manage equipment, and learn post-processing techniques.', link: getRandomJobPortalLink() },
+            { id: 58, title: 'Journalism Intern', company: 'The Daily Chronicle', location: 'Mumbai, India', description: 'Gain experience in reporting, writing articles, and conducting interviews for a news organization.', link: getRandomJobPortalLink() },
+            { id: 59, title: 'Architecture Intern', company: 'Urban Designs', location: 'Bangalore, India', description: 'Support architects in drafting, modeling, and preparing presentations for building projects.', link: getRandomJobPortalLink() },
+            { id: 60, title: 'Biotechnology Intern', company: 'BioGen Labs', location: 'Pune, India', description: 'Work in a lab setting, assisting with experiments, data collection, and research in biotechnology.', link: getRandomJobPortalLink() },
+            { id: 61, title: 'Fashion Design Intern', company: 'Vogue Styles', location: 'Delhi, India', description: 'Assist designers with sketching, fabric sourcing, and creating sample garments.', link: getRandomJobPortalLink() },
+            { id: 62, title: 'Hotel Management Intern', company: 'Grand Plaza Hotel', location: 'Mumbai, India', description: 'Get hands-on experience in various hotel departments, including front office, F&B, and housekeeping.', link: getRandomJobPortalLink() }
+        ];
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM ELEMENTS ---
+            const navCourses = document.getElementById('navCourses');
+            const navJobs = document.getElementById('navJobs');
+            const coursesView = document.getElementById('coursesView');
+            const jobsView = document.getElementById('jobsView');
+            const courseSearchInput = document.getElementById('courseSearchInput');
+            const courseGrid = document.getElementById('courseGrid');
+            const courseEmptyState = document.getElementById('courseEmptyState');
+            const jobSearchInput = document.getElementById('jobSearchInput');
+            const jobGrid = document.getElementById('jobGrid');
+            const jobEmptyState = document.getElementById('jobEmptyState');
+            const toggleSuggesterBtn = document.getElementById('toggleSuggesterBtn');
+            const courseSuggesterContainer = document.getElementById('courseSuggesterContainer');
+            const courseListing = document.getElementById('courseListing');
+
+            // Chatbot elements
+            const chatbotToggleButton = document.getElementById('chatbotToggleButton');
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            const closeChatbotButton = document.getElementById('closeChatbotButton');
+            const chatMessagesContent = document.getElementById('chatMessagesContent');
+            const chatForm = document.getElementById('chatForm');
+            const chatInput = document.getElementById('chatInput');
+            const chatSendButton = document.getElementById('chatSendButton');
+            const chatMessages = document.getElementById('chatMessages');
+
+            // --- STATE MANAGEMENT ---
+            let currentView = 'courses';
+            let isSuggesterVisible = false;
+
+            // --- RENDER FUNCTIONS ---
+            const renderCourses = (coursesToRender) => {
+                courseGrid.innerHTML = '';
+                if (coursesToRender.length === 0) {
+                    courseEmptyState.classList.remove('hidden');
+                    const query = courseSearchInput.value;
+                    courseEmptyState.innerHTML = query ? `No courses found for "<span class="font-semibold text-blue-400">${query}</span>". Try a different search term!` : `Start by typing in the search bar or use the "Find Your Ideal Course!" button to discover exciting career paths!`;
+                } else {
+                    courseEmptyState.classList.add('hidden');
+                    coursesToRender.forEach((course, index) => {
+                        const courseCard = `
+                            <div class="bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] p-7 border border-gray-700 flex flex-col card-animation" style="animation-delay: ${index * 0.05}s;">
+                                <h3 class="text-2xl font-extrabold text-blue-400 mb-3 leading-snug">${course.name}</h3>
+                                <p class="text-gray-300 mb-5 flex-grow text-base">${course.description}</p>
+                                <a href="${course.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-700 mt-auto text-lg group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                    Get Free Course
+                                </a>
+                            </div>`;
+                        courseGrid.innerHTML += courseCard;
+                    });
+                }
+            };
+
+            const renderJobs = (jobsToRender) => {
+                jobGrid.innerHTML = '';
+                 if (jobsToRender.length === 0) {
+                    jobEmptyState.classList.remove('hidden');
+                    const query = jobSearchInput.value;
+                    jobEmptyState.innerHTML = query ? `No jobs or internships found for "<span class="font-semibold text-teal-400">${query}</span>". Try a different search term!` : `Start by typing in the search bar to find exciting job and internship opportunities!`;
+                } else {
+                    jobEmptyState.classList.add('hidden');
+                    jobsToRender.forEach((job, index) => {
+                        const jobCard = `
+                        <div class="bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] p-7 border border-gray-700 flex flex-col card-animation" style="animation-delay: ${index * 0.05}s;">
+                            <h3 class="text-2xl font-extrabold text-teal-400 mb-2 leading-snug">${job.title}</h3>
+                            <p class="text-gray-300 text-lg mb-2 font-semibold">${job.company} - ${job.location}</p>
+                            <p class="text-gray-400 mb-5 flex-grow text-base">${job.description}</p>
+                            <a href="${job.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-700 mt-auto text-lg group">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899l4 4a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.102 1.101m-1.758-4.899a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" /></svg>
+                                Apply Now
+                            </a>
+                        </div>`;
+                        jobGrid.innerHTML += jobCard;
+                    });
+                }
+            };
+
+            // --- EVENT HANDLERS ---
+            const handleNavClick = (view) => {
+                currentView = view;
+                if (view === 'courses') {
+                    coursesView.classList.remove('hidden');
+                    jobsView.classList.add('hidden');
+                    navCourses.className = 'py-3 px-6 rounded-xl font-bold text-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white';
+                    navJobs.className = 'py-3 px-6 rounded-xl font-bold text-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gray-700 text-gray-300 hover:bg-gray-600';
+                } else {
+                    coursesView.classList.add('hidden');
+                    jobsView.classList.remove('hidden');
+                    navJobs.className = 'py-3 px-6 rounded-xl font-bold text-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white';
+                    navCourses.className = 'py-3 px-6 rounded-xl font-bold text-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gray-700 text-gray-300 hover:bg-gray-600';
+                    renderJobs(allJobsAndInternships); // Initial render for jobs
+                }
+            };
+
+            const filterCourses = () => {
+                const query = courseSearchInput.value.toLowerCase();
+                const filtered = allCourses.filter(course =>
+                    course.name.toLowerCase().includes(query) ||
+                    course.description.toLowerCase().includes(query)
+                );
+                renderCourses(filtered);
+            };
+            
+            const filterJobs = () => {
+                const query = jobSearchInput.value.toLowerCase();
+                const filtered = allJobsAndInternships.filter(job =>
+                    job.title.toLowerCase().includes(query) ||
+                    job.company.toLowerCase().includes(query) ||
+                    job.location.toLowerCase().includes(query) ||
+                    job.description.toLowerCase().includes(query)
+                );
+                renderJobs(filtered);
+            };
+
+            // --- COURSE SUGGESTER LOGIC ---
+            const suggesterQuestions = [
+                { id: 'subjectArea', question: '1. What is your favorite subject area?', options: ['STEM (Science, Technology, Engineering, Math)', 'Arts & Humanities (Literature, History, Philosophy, Fine Arts)', 'Business & Finance (Management, Marketing, Economics)', 'Social Sciences (Psychology, Sociology, Political Science)', 'Competitive Exams (UPSC, GATE, CAT, SSC)'] },
+                { id: 'activities', question: '2. What kind of activities do you enjoy most?', options: ['Problem-solving and logical thinking', 'Creative expression and design', 'Analyzing data and research', 'Interacting with people and communication', 'Learning new languages or cultures', 'Structured preparation for specific goals'] },
+                { id: 'motivation', question: '3. What motivates you most in a career?', options: ['Innovation and technological advancement', 'Helping others and making a social impact', 'Financial success and stability', 'Creative freedom and self-expression', 'Research and discovery', 'Public service and government roles'] },
+                { id: 'skillDevelopment', question: '9. Which of these skills do you want to develop further?', options: ['Coding and programming', 'Communication and public speaking', 'Critical thinking and problem-solving', 'Leadership and management', 'Design and visual aesthetics', 'Data analysis and interpretation'] },
+                { id: 'futureRole', question: '10. What is your ideal future role?', options: ['Innovator/Developer', 'Educator/Trainer', 'Researcher/Scientist', 'Entrepreneur/Business Leader', 'Public Servant/Administrator', 'Creative Professional/Artist'] }
+            ];
+            let suggesterAnswers = {};
+            let currentQuestionIndex = 0;
+
+            const renderSuggester = () => {
+                const q = suggesterQuestions[currentQuestionIndex];
+                const isLastQuestion = currentQuestionIndex === suggesterQuestions.length - 1;
+
+                const optionsHtml = q.options.map(option => `
+                    <label class="flex items-center text-gray-300 cursor-pointer p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors duration-200">
+                        <input type="radio" name="${q.id}" value="${option}" class="form-radio h-5 w-5 text-blue-500 bg-gray-900 border-gray-600 focus:ring-blue-500" ${suggesterAnswers[q.id] === option ? 'checked' : ''}>
+                        <span class="ml-3 text-lg">${option}</span>
+                    </label>
+                `).join('');
+
+                courseSuggesterContainer.innerHTML = `
+                    <div class="max-w-4xl mx-auto mt-12 mb-16 p-8 bg-gray-800 rounded-3xl shadow-2xl border border-gray-700 animate-fade-in">
+                        <h2 class="text-3xl font-extrabold text-blue-300 mb-8 text-center">Find Your Ideal Course</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <p class="text-xl text-gray-300 mb-4 font-semibold">${q.question}</p>
+                                <div class="space-y-3">${optionsHtml}</div>
+                            </div>
+                            <div class="flex justify-between mt-8">
+                                <button id="suggesterPrev" class="bg-gray-700 hover:bg-gray-600 text-gray-300 font-bold py-3 px-6 rounded-xl transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-600" ${currentQuestionIndex === 0 ? 'disabled' : ''}>
+                                    Previous
+                                </button>
+                                ${isLastQuestion ? `
+                                <button id="suggesterSubmit" class="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    Get Recommendations
+                                </button>` : `
+                                <button id="suggesterNext" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    Next
+                                </button>`}
+                            </div>
+                        </div>
+                    </div>`;
+                
+                // Add event listeners for the newly created buttons and inputs
+                if (currentQuestionIndex > 0) document.getElementById('suggesterPrev').addEventListener('click', handleSuggesterPrev);
+                if (isLastQuestion) document.getElementById('suggesterSubmit').addEventListener('click', handleSuggesterSubmit);
+                else document.getElementById('suggesterNext').addEventListener('click', handleSuggesterNext);
+                
+                document.querySelectorAll(`input[name="${q.id}"]`).forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        suggesterAnswers[q.id] = e.target.value;
+                        // Enable next/submit button
+                         if (isLastQuestion) document.getElementById('suggesterSubmit').disabled = false;
+                         else document.getElementById('suggesterNext').disabled = false;
+                    });
+                });
+                // Disable next/submit button initially
+                if (isLastQuestion) document.getElementById('suggesterSubmit').disabled = !suggesterAnswers[q.id];
+                else document.getElementById('suggesterNext').disabled = !suggesterAnswers[q.id];
+            };
+
+            const handleSuggesterNext = () => {
+                if (currentQuestionIndex < suggesterQuestions.length - 1) {
+                    currentQuestionIndex++;
+                    renderSuggester();
+                }
+            };
+
+            const handleSuggesterPrev = () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    renderSuggester();
+                }
+            };
+
+            const handleSuggesterSubmit = () => {
+                const suggestedCategories = new Set();
+                if (suggesterAnswers.subjectArea === 'STEM (Science, Technology, Engineering, Math)' || suggesterAnswers.skillDevelopment === 'Coding and programming') {
+                    suggestedCategories.add('Python').add('Web Development').add('Data Science').add('AI').add('Cybersecurity').add('Cloud').add('Game').add('Data Structures').add('Mobile App').add('SQL').add('Blockchain').add('Engineering');
+                }
+                if (suggesterAnswers.subjectArea === 'Arts & Humanities (Literature, History, Philosophy, Fine Arts)' || suggesterAnswers.activities === 'Creative expression and design') {
+                    suggestedCategories.add('Graphic Design').add('Photography').add('Video Editing').add('Music Production').add('Creative Writing').add('Philosophy').add('Art History').add('Linguistics').add('Journalism');
+                }
+                if (suggesterAnswers.subjectArea === 'Business & Finance (Management, Marketing, Economics)' || suggesterAnswers.motivation === 'Financial success and stability') {
+                    suggestedCategories.add('Marketing').add('Business Analytics').add('Project Management').add('Financial Accounting').add('Content Marketing').add('Supply Chain').add('Operations Management').add('CRM').add('Sales').add('Human Resources').add('Negotiation').add('Leadership');
+                }
+                if (suggesterAnswers.subjectArea === 'Social Sciences (Psychology, Sociology, Political Science)' || suggesterAnswers.motivation === 'Helping others and making a social impact') {
+                    suggestedCategories.add('Psychology').add('Sociology').add('Public Policy').add('Anthropology').add('Journalism').add('Conflict Resolution').add('Customer Service').add('Public Speaking');
+                }
+                if (suggesterAnswers.subjectArea === 'Competitive Exams (UPSC, GATE, CAT, SSC)') {
+                    suggestedCategories.add('UPSC').add('CAT').add('SSC').add('GATE');
+                }
+
+                const recommendedCourses = allCourses.filter(course =>
+                    Array.from(suggestedCategories).some(category =>
+                        course.name.toLowerCase().includes(category.toLowerCase()) ||
+                        course.description.toLowerCase().includes(category.toLowerCase())
+                    )
+                );
+                
+                courseSuggesterContainer.innerHTML = `
+                    <div class="max-w-4xl mx-auto mt-12 mb-16 p-8 bg-gray-800 rounded-3xl shadow-2xl border border-gray-700 animate-fade-in text-center">
+                        <h3 class="text-3xl font-extrabold text-green-400 mb-6">Your Recommended Courses</h3>
+                        <p class="text-xl text-gray-300 mb-6">Based on your answers, here are some courses you might like!</p>
+                        <button id="retakeQuizBtn" class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-3 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-700 mt-4">
+                            Retake Quiz
+                        </button>
+                    </div>`;
+                
+                document.getElementById('retakeQuizBtn').addEventListener('click', toggleSuggester);
+                
+                renderCourses(recommendedCourses.slice(0, 8)); // Show top 8 recommendations
+            };
+
+            const toggleSuggester = () => {
+                isSuggesterVisible = !isSuggesterVisible;
+                if (isSuggesterVisible) {
+                    toggleSuggesterBtn.textContent = 'Hide Course Suggester';
+                    courseListing.classList.add('hidden');
+                    courseSuggesterContainer.classList.remove('hidden');
+                    // Reset quiz
+                    suggesterAnswers = {};
+                    currentQuestionIndex = 0;
+                    renderSuggester();
+                } else {
+                    toggleSuggesterBtn.textContent = 'Find Your Ideal Course!';
+                    courseListing.classList.remove('hidden');
+                    courseSuggesterContainer.classList.add('hidden');
+                    courseSuggesterContainer.innerHTML = ''; // Clear content
+                    filterCourses(); // Re-render courses based on search
+                }
+            };
+
+            // --- CHATBOT LOGIC ---
+            let isChatbotOpen = false;
+            let chatHistory = [];
+
+            const toggleChatbot = () => {
+                isChatbotOpen = !isChatbotOpen;
+                if (isChatbotOpen) {
+                    chatbotWindow.classList.remove('hidden');
+                    setTimeout(() => {
+                        chatbotWindow.classList.remove('opacity-0', 'translate-y-16');
+                        chatbotWindow.classList.add('opacity-100', 'translate-y-0');
+                    }, 10);
+                } else {
+                    chatbotWindow.classList.remove('opacity-100', 'translate-y-0');
+                    chatbotWindow.classList.add('opacity-0', 'translate-y-16');
+                    setTimeout(() => chatbotWindow.classList.add('hidden'), 300);
+                }
+            };
+
+            const addMessageToChat = (text, sender) => {
+                const message = { text, sender };
+                chatHistory.push(message);
+                renderChatMessages();
+            };
+
+            const renderChatMessages = () => {
+                chatMessagesContent.innerHTML = '';
+                chatHistory.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`;
+                    messageDiv.innerHTML = `
+                        <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-lg' : 'bg-gray-700 text-gray-200 rounded-bl-lg'}">
+                            <p class="text-sm">${msg.text}</p>
+                        </div>`;
+                    chatMessagesContent.appendChild(messageDiv);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            const getBotResponse = (userInput) => {
+                const input = userInput.toLowerCase();
+                if (input.includes('hello') || input.includes('hi')) return "Hi there! How can I assist you with your career goals?";
+                if (input.includes('course')) return "Great! You can search for courses using the search bar on the main page, or try our 'Find Your Ideal Course!' quiz for personalized recommendations.";
+                if (input.includes('job') || input.includes('internship')) return "Looking for a job or internship? Head over to the 'Jobs & Internships' section to search for opportunities across various fields and locations.";
+                if (input.includes('python') || input.includes('data science') || input.includes('ai')) return `We have excellent free courses on topics like ${userInput}. Just type it into the course search bar to find them!`;
+                if (input.includes('gate') || input.includes('upsc') || input.includes('cat')) return `Yes, we have resources for ${userInput.toUpperCase()} preparation. Use the search bar in the 'Courses' section to find them.`;
+                if (input.includes('thank')) return "You're welcome! Let me know if there's anything else I can help with.";
+                if (input.includes('bye')) return "Goodbye! Best of luck with your career journey.";
+                return "I'm here to help with career advice. You can ask me about finding courses, jobs, or specific fields like 'Data Science' or 'GATE exams'.";
+            };
+
+            chatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const userInput = chatInput.value.trim();
+                if (userInput === '') return;
+
+                addMessageToChat(userInput, 'user');
+                chatInput.value = '';
+                chatSendButton.disabled = true;
+
+                // Loading indicator
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'flex justify-start';
+                loadingDiv.innerHTML = `
+                    <div class="bg-gray-700 text-gray-200 rounded-2xl rounded-bl-lg px-4 py-3 flex items-center space-x-2">
+                        <span class="h-2 w-2 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                        <span class="h-2 w-2 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                        <span class="h-2 w-2 bg-blue-400 rounded-full animate-bounce"></span>
+                    </div>`;
+                chatMessagesContent.appendChild(loadingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                setTimeout(() => {
+                    const botResponse = getBotResponse(userInput);
+                    chatMessagesContent.removeChild(loadingDiv); // Remove loading indicator
+                    addMessageToChat(botResponse, 'bot');
+                    chatSendButton.disabled = false;
+                }, 1200);
+            });
+
+
+            // --- EVENT LISTENERS ---
+            navCourses.addEventListener('click', () => handleNavClick('courses'));
+            navJobs.addEventListener('click', () => handleNavClick('jobs'));
+            courseSearchInput.addEventListener('input', filterCourses);
+            jobSearchInput.addEventListener('input', filterJobs);
+            toggleSuggesterBtn.addEventListener('click', toggleSuggester);
+            chatbotToggleButton.addEventListener('click', toggleChatbot);
+            closeChatbotButton.addEventListener('click', toggleChatbot);
+
+            // --- INITIALIZATION ---
+            filterCourses(); // Initial render for courses
+            addMessageToChat("Hello! I'm ASPIRELY's AI assistant. How can I help you find the right course or job today?", 'bot');
+        });
+    </script>
+</body>
+</html>
